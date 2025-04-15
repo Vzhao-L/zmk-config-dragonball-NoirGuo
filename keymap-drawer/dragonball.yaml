@@ -1,3 +1,4 @@
+layout: {zmk_keyboard: dragonball}
 layers:
   Qwery:
   - Q
@@ -111,11 +112,11 @@ layers:
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:transfer$$', type: trans}
   Modify:
-  - Gui+ Q
-  - Gui+ W
-  - Gui+ E
-  - Gui+ R
-  - Gui+ T
+  - Gui+Q
+  - Gui+W
+  - Gui+E
+  - Gui+R
+  - Gui+T
   - {t: /, s: '?'}
   - '7'
   - '8'
@@ -125,7 +126,7 @@ layers:
   - {t: S, h: '$$mdi:apple-keyboard-command$$'}
   - {t: D, h: '$$mdi:apple-keyboard-command$$'}
   - {t: F, h: '$$mdi:apple-keyboard-command$$'}
-  - Gui+ G
+  - Gui+G
   - KP MULTIPLY
   - '4'
   - {t: '5', s: '%'}
@@ -135,7 +136,7 @@ layers:
   - {t: X, h: '$$mdi:apple-keyboard-command$$'}
   - {t: C, h: '$$mdi:apple-keyboard-command$$'}
   - {t: V, h: '$$mdi:apple-keyboard-command$$'}
-  - Gui+ B
+  - Gui+B
   - +
   - '1'
   - '2'
@@ -300,17 +301,25 @@ combos:
   k: $$mdi:keyboard-esc$$
 - p: [2, 3]
   k: {t: '[', s: '{'}
-- p: [8, 9]
+- p: [7, 6]
   k: {t: ']', s: '}'}
-- p: [15, 16]
+- p: [12, 13]
   k: (
-- p: [19, 20]
+- p: [16, 17]
   k: )
-- p: [27, 28]
+- p: [22, 23]
   k: '{'
-- p: [31, 32]
+- p: [26, 27]
   k: '}'
-- p: [5, 6]
+- p: [5, 4]
   k: {t: \, s: '|'}
-- p: [17, 18]
+- p: [14, 15]
   k: '|'
+- p: [13, 14]
+  k: $$mdi:mouse-left-click-outline$$
+- p: [23, 24]
+  k: $$mdi:mouse-right-click-outline$$
+- p: [15, 16]
+  k: $$mdi:mouse-left-click-outline$$
+- p: [25, 26]
+  k: $$mdi:mouse-right-click-outline$$
