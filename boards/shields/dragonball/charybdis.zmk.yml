@@ -1,0 +1,16 @@
+file_format: "1"
+id: charybdis
+name: Charybdis
+type: shield
+url: https://github.com/atulloh/dragonball
+requires:
+  - nice_nano_v2
+features:
+  - keys
+  - underglow
+  - display
+  - pointer
+siblings:
+  - charybdis_central_dongle
+  - charybdis_peripheral_left
+  - charybdis_peripheral_right
