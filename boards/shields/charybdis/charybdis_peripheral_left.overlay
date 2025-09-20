@@ -8,9 +8,17 @@
 #include "trackball.dtsi"
 #include "split_input_common.dtsi"
 
-&kscan0 {
-    compatible = "zmk,kscan-gpio-matrix";
-    label = "KSCAN";
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+    
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "row2col";
+        wakeup-source;
+
 	row-gpios
         = <&gpio0 31 GPIO_ACTIVE_HIGH>
         , <&gpio1 15 GPIO_ACTIVE_HIGH>
@@ -24,6 +32,7 @@
 		, <&gpio1 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 		, <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 		;
+	};
 };
 
 &spi1 {

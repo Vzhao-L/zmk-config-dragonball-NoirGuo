@@ -20,11 +20,6 @@
         >;
     };
 	
-    kscan0: kscan {
-        diode-direction = "row2col";
-    };
-
-
     left_encoder: encoder_left {
         compatible = "alps,ec11";
         a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
