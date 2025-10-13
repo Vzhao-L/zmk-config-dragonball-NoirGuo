@@ -17,7 +17,7 @@ manifest:
     - name: zmk-dongle-display
       remote: englmaxi
       revision: main
-        - name: zephyr
+    - name: zephyr
       remote: zmkfirmware
       revision: v3.5.0+zmk-fixes
       clone-depth: 1
