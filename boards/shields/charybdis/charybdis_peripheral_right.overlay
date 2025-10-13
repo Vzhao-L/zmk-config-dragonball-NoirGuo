@@ -9,7 +9,7 @@
 #include "split_input_common.dtsi"
 
 &default_transform {
-	col-offset = <5>;
+	col-offset = <6>;
 };
 
 / {
