@@ -40,4 +40,8 @@ if SHIELD_CHARYBDIS_CENTRAL_DONGLE || SHIELD_CHARYBDIS_PERIPHERAL_LEFT || SHIELD
 config ZMK_SPLIT
     default y
 
+config ZMK_RGB_UNDERGLOW
+    select WS2812_STRIP
+    select SPI
+    
 endif
