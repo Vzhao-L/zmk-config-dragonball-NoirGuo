@@ -67,7 +67,7 @@
         segment-remap;                            // 列重映射（可选）
         com-invdir;                                // COM 方向反转（可选）
         prechargep = <0x22>;                       // 预充电周期（可选）
-        // inversion-on;                           // 移除或根据需要启用（SSD1306 可能也支持）
+        inversion-on;                           // 移除或根据需要启用（SSD1306 可能也支持）
     };
 };
 
