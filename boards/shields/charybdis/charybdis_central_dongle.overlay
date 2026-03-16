@@ -50,24 +50,25 @@
 }; 
 
 &i2c0 {
-	status = "okay";
-	compatible = "nordic,nrf-twi";
+    status = "okay";
+    compatible = "nordic,nrf-twi";
     pinctrl-0 = <&i2c0_default>;
     pinctrl-1 = <&i2c0_sleep>;
-	oled: sh1106@3c {
-        compatible = "sinowealth,sh1106";
-        reg = <0x3c>;
-        width = <129>;
-        height = <64>;
-        segment-offset = <1>;
-        page-offset = <0>;
-        display-offset = <0>;
-        multiplex-ratio = <63>;
-        segment-remap;
-        com-invdir;
-        inversion-on;
-        prechargep = <0x22>;
-	};
+
+    oled: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";    // 改为 SSD1306 的兼容字符串
+        reg = <0x3c>;                         // I2C 地址（通常与 SH1106 相同）
+        width = <128>;                         // 屏幕宽度
+        height = <64>;                          // 屏幕高度
+        segment-offset = <0>;                   // 列偏移，SSD1306 通常为 0
+        page-offset = <0>;                       // 页偏移
+        display-offset = <0>;                    // 显示偏移
+        multiplex-ratio = <63>;                  // 复用率（64 行，所以 63）
+        segment-remap;                            // 列重映射（可选）
+        com-invdir;                                // COM 方向反转（可选）
+        prechargep = <0x22>;                       // 预充电周期（可选）
+        // inversion-on;                           // 移除或根据需要启用（SSD1306 可能也支持）
+    };
 };
 
 //RGB bus
