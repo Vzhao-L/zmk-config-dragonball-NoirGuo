@@ -12,15 +12,15 @@ layers:
   - O
   - P
   - A
-  - '&ht_kyd LCTRL S'
-  - '&ht_kyd LEFT_ALT D'
-  - '&ht_kyd LEFT_WIN F'
+  - {t: S, h: '$$mdi:apple-keyboard-control$$'}
+  - {t: D, h: '$$mdi:apple-keyboard-option$$'}
+  - {t: F, h: LEFT WIN}
   - G
   - H
-  - '&ht_kyd RIGHT_WIN J'
-  - '&ht_kyd RIGHT_ALT K'
-  - '&ht_kyd RCTRL L'
-  - '&ht_kyd SEMICOLON BACKSPACE'
+  - {t: J, h: RIGHT WIN}
+  - {t: K, h: '$$mdi:apple-keyboard-option$$'}
+  - {t: L, h: '$$mdi:apple-keyboard-control$$'}
+  - {t: '$$mdi:backspace$$', h: ;}
   - Z
   - X
   - C
@@ -30,12 +30,12 @@ layers:
   - M
   - {t: ',', s: <}
   - {t: ., s: '>'}
-  - '&ht_kyd SQT SLASH'
+  - {t: /, h: '''', s: '?'}
   - '&mkp MB1'
   - '&mkp MB2'
   - {t: '$$mdi:keyboard-tab$$', h: layer-2}
   - {t: '$$mdi:keyboard-return$$', h: layer-1}
-  - '&ht_kyd DELETE SPACE'
+  - {t: '$$mdi:keyboard-space$$', h: '$$mdi:backspace-reverse-outline$$'}
   - $$mdi:apple-keyboard-shift$$
   layer-1:
   - F1
