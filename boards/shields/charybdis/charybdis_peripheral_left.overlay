@@ -37,7 +37,7 @@
         , <&gpio1 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 		;
 	};
-&left_encoder_1 {
+&left_encoder {
     status = "okay";
 };
 
