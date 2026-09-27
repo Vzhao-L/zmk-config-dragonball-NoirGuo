@@ -1,28 +1,45 @@
+// XI-MK1_2 (Charybdis 4x6 clone, 56-key) — Colemak-DH + HRM + layers
+// Matrix verified against Vzhao-L/zmk-for-charybdis @ main-20250226
+// ====================================================================
+// POSITION MAP (from charybdis.dtsi transform):
+// L keywell: 0-5 / 12-17 / 24-29 / 36-41   R keywell: 6-11 / 18-23 / 30-35 / 42-47
+// L thumbs: 48 49 50 (upper), 53 54 (lower; 54 = wheel press ASSUMED - verify!)
+// R thumbs: 51 52 (upper), 55 (lower)
+// Encoders (left): slot 1 = wheel (assumed), slot 2 = unpopulated
+// scroll-layers = <1> in charybdis_right.overlay -> on layer 1 (MSE) the
+// trackball scrolls natively. Do not reorder layer 1 away from MSE.
+// ====================================================================
+
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 15
+
 #include <dt-bindings/zmk/mouse.h>
+#include <input/processors.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
-#include <input/processors.dtsi>
-#include <zephyr/dt-bindings/input/input-event-codes.h>
 
-#define ZMK_POINTING_DEFAULT_MOVE_VAL 1000 // 600
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 12   // 10
+#define BASE 0
+#define MSE  1
+#define NAV  2
+#define SYM  3
+#define NUM  4
+#define FUN  5
+#define GAME 6
 
 &lt {
-    tapping-term-ms = <201>;
+    tapping-term-ms = <200>;
     flavor = "balanced";
-    quick-tap-ms = <149>;
+    quick-tap-ms = <150>;
 };
-&mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
-
-&msc_input_listener { input-processors = <&zip_scroll_scaler 2 1>; };
 
 &msc {
-    acceleration-exponent = <0>;      // 0
-    time-to-max-speed-ms = <0>;       // 300
-    delay-ms = <0>;                   // 0
+    acceleration-exponent = <0>;
+    time-to-max-speed-ms = <200>;
+    delay-ms = <0>;
 };
 
 &mmv {
@@ -31,166 +48,187 @@
     trigger-period-ms = <16>;
 };
 
-
 / {
-      // 上下滚动编码器行为
-
+    // ---- encoder behaviors (vendor-compatible) ----
     scroll_vertical_encoder: scroll_vertical_encoder {
         compatible = "zmk,behavior-sensor-rotate";
         #sensor-binding-cells = <0>;
         bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
-
         tap-ms = <100>;
     };
-
-    // 左右滚动编码器行为
-
     scroll_horizontal_encoder: scroll_horizontal_encoder {
         compatible = "zmk,behavior-sensor-rotate";
         #sensor-binding-cells = <0>;
         bindings = <&msc SCRL_LEFT>, <&msc SCRL_RIGHT>;
-
         tap-ms = <100>;
     };
-    macros {
-        To1_macro: To1_macro {
-            compatible = "zmk,behavior-macro";
-            label = "To1_macro";
-            #binding-cells = <0>;
-            bindings = <&rgb_ug RGB_EFF &rgb_ug RGB_COLOR_HSB(128,100,50) &to 1>;
-        };
+    vol_encoder: vol_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&kp C_VOL_UP>, <&kp C_VOL_DN>;
+        tap-ms = <100>;
+    };
+    tab_encoder: tab_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&kp LC(TAB)>, <&kp LC(LS(TAB))>;
+        tap-ms = <100>;
+    };
 
-        To0_macro: To0_macro {
-            compatible = "zmk,behavior-macro";
-            label = "To0_macro";
-            #binding-cells = <0>;
-            bindings = <&rgb_ug RGB_EFR &to 0>;
+    behaviors {
+        // Left-hand home-row mods: hold only triggers when right half is active
+        hm_l: homerow_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;   // delete this line if build fails
+            hold-trigger-key-positions =
+                <6 7 8 9 10 11
+                 18 19 20 21 22 23
+                 30 31 32 33 34 35
+                 42 43 44 45 46 47
+                 51 52 55>;
+            bindings = <&kp>, <&kp>;
         };
+        // Right-hand home-row mods: hold only triggers when left half is active
+        hm_r: homerow_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            hold-trigger-key-positions =
+                <0 1 2 3 4 5
+                 12 13 14 15 16 17
+                 24 25 26 27 28 29
+                 36 37 38 39 40 41
+                 48 49 50 53 54>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
 
-        To2_macro: To2_macro {
-            compatible = "zmk,behavior-macro";
-            label = "To2_macro";
-            #binding-cells = <0>;
-            bindings =
-                <&to 0>,
-                <&macro_wait_time 30>,
-                <&rgb_ug RGB_COLOR_HSB(250,100,50)>;
+    combos {
+        compatible = "zmk,combos";
+        combo_caps_word {
+            timeout-ms = <60>;
+            key-positions = <49 50>;      // left thumbs: NAV + FUN
+            bindings = <&caps_word>;
+            layers = <BASE>;
+        };
+        combo_enter {
+            timeout-ms = <60>;
+            key-positions = <44 45>;      // right , + .
+            bindings = <&kp RET>;
+            layers = <BASE>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        layer_0 {
+        // ---------- L0 BASE: Colemak-DH, hm_* = home-row mods ----------
+        base_layer {
+            display-name = "Base";
             bindings = <
-&kp ESC         &kp N1  &kp N2  &kp N3        &kp N4     &kp N5      &kp N6     &kp N7     &kp N8     &kp N9            &kp N0    &kp BACKSPACE
-&kp TAB         &kp Q   &kp W   &kp E         &kp R      &kp T       &kp Y      &kp U      &kp I      &kp O             &kp P     &kp BSLH
-&kp LEFT_SHIFT  &kp A   &kp S   &kp D         &kp F      &kp G       &kp H      &kp J      &kp K      &kp L             &kp SEMI  &kp SQT
-&kp LCTRL       &kp Z   &kp X   &kp C         &kp V      &kp B       &kp N      &kp M      &kp COMMA  &kp LEFT_BRACKET  &kp FSLH  &kp MINUS
-                                &kp LEFT_ALT  &kp SPACE  &to 1       &kp LWIN   &kp SPACE
-                                              &mkp MB1   &mkp MB2    &kp ENTER
+&kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5        &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp EQUAL
+&kp TAB &kp Q &kp W &kp F &kp P &kp G               &kp J &kp L &kp U &kp Y &kp SEMI &kp BSPC
+&kp LCTRL &hm_l LGUI A &hm_l LALT R &hm_l LSHFT S &hm_l LCTL T &kp D   &kp H &hm_r RCTL N &hm_r RSHFT E &hm_r RALT I &hm_r RGUI O &kp APOS
+&kp LSFT &kp Z &kp X &kp C &kp V &kp B             &kp K &kp M &kp COMMA &kp DOT &kp SLASH &kp RCTL
+               &kp SPC &lt NAV TAB &lt FUN ESC     &lt SYM BSPC &lt NAV RET
+                       &lt MSE BSPC &kp CAPS        &lt NUM DEL
             >;
-            sensor-bindings =
-                <&scroll_vertical_encoder>,
-                // 编码器1：上下滚动,,
-                <&scroll_horizontal_encoder>;
-
-            // 编码器2：左右滚动
+            sensor-bindings = <&scroll_vertical_encoder &scroll_horizontal_encoder>;
         };
 
-        layer_1 {
+        // ---------- L1 MSE: hold L53 -> ball SCROLLS (scroll-layers=<1>);
+        // mouse buttons on left fingers; wheel press unaffected ----------
+        mse_layer {
+            display-name = "Mouse";
             bindings = <
-&kp F1          &kp F2           &kp F3           &kp F4           &kp F5           &kp F6        &kp F7     &kp F8    &kp F9      &kp F10            &kp F11  &kp F12
-&kp CAPS        &none            &none            &none            &none            &none         &none      &none     &kp UP      &none              &none    &none
-&kp LEFT_SHIFT  &none            &none            &none            &bt BT_NXT       &bt BT_CLR    &none      &kp LEFT  &kp DOWN    &kp RIGHT          &none    &none
-&kp LCTRL       &none            &none            &none            &none            &none         &none      &none     &kp PERIOD  &kp RIGHT_BRACKET  &none    &kp EQUAL
-                                                  &kp LEFT_ALT     &kp SPACE        &to 0         &none      &none
-                                                                   &mkp MB1         &mkp MB2      &kp ENTER
+&trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans
+&trans &mkp MB1 &mkp MB2 &mkp MB3 &trans &trans      &trans &trans &trans &trans &trans &trans
+&trans &kp LA(LEFT) &kp LA(RIGHT) &trans &trans &trans   &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans
+               &trans &trans &trans                  &trans &trans
+                       &trans &trans                  &trans
             >;
+            sensor-bindings = <&scroll_vertical_encoder &scroll_horizontal_encoder>;
         };
 
-        layer_2 {
+        // ---------- L2 NAV: hold L49 (or R52). Arrows right hand,
+        // word-jump below, clipboard chords left ----------
+        nav_layer {
+            display-name = "Nav";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &none     &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &none     &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
+&trans &trans &trans &trans &trans &trans            &trans &kp HOME &kp PGUP &kp PGDN &kp END &trans
+&trans &kp LC(Z) &kp LC(X) &kp LC(C) &kp LC(V) &kp LC(Y)   &trans &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans
+&trans &trans &trans &trans &trans &trans            &trans &kp LC(LEFT) &kp LC(DOWN) &kp LC(UP) &kp LC(RIGHT) &trans
+&trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans
+               &trans &trans &trans                  &trans &trans
+                       &trans &trans                  &trans
             >;
+            sensor-bindings = <&tab_encoder &tab_encoder>;
         };
 
-        layer_3 {
+        // ---------- L3 SYM: hold R51. Brackets column-paired L<->R ----------
+        sym_layer {
+            display-name = "Sym";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
+&trans &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &trans &kp CARET &kp AMPS &kp ASTRK &kp LPAR &kp RPAR
+&trans &kp SEMI &kp COLON &kp EQUAL &kp PLUS &kp BSLH   &trans &kp MINUS &kp UNDER &kp QMARK &kp SLASH &kp PIPE
+&trans &kp APOS &kp LT &kp LBRC &kp LBKT &kp LPAR      &kp RPAR &kp RBKT &kp RBRC &kp GT &kp DQT &trans
+&trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans
+               &trans &trans &trans                  &trans &trans
+                       &trans &trans                  &trans
             >;
+            sensor-bindings = <&scroll_vertical_encoder &scroll_horizontal_encoder>;
         };
 
-        layer_4 {
+        // ---------- L4 NUM: hold R55 (numpad same hand). F-keys left ----------
+        num_layer {
+            display-name = "Num";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
+&kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6           &trans &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MINUS &trans
+&kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12        &kp KP_N0 &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_PLUS &trans
+&trans &kp PSCRN &kp PAUSE_BREAK &trans &trans &trans   &kp KP_ENTER &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_DOT &trans
+&trans &trans &trans &trans &trans &trans           &trans &trans &trans &trans &trans &trans
+               &trans &trans &trans                 &trans &trans
+                       &trans &trans                 &trans
             >;
+            sensor-bindings = <&vol_encoder &vol_encoder>;
         };
 
-        layer_5 {
+        // ---------- L5 FUN: hold L50. BT / Studio / boot / RGB / media.
+        // pos16 = &tog GAME ----------
+        fun_layer {
+            display-name = "Fun";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
+&bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &out OUT_BLE   &trans &rgb_ug RGB_TOG &rgb_ug RGB_BRI &rgb_ug RGB_BRD &rgb_ug RGB_EFF &rgb_ug RGB_HUI
+&trans &studio_unlock &bootloader &sys_reset &tog GAME &trans                 &kp C_PP &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &kp C_PREV &kp C_NEXT
+&sk LCTRL &sk LALT &sk LSHFT &sk LGUI &trans &trans                    &trans &sk RCTRL &sk RALT &sk RSHFT &sk RGUI &trans
+&trans &trans &trans &trans &trans &trans                                          &trans &trans &trans &trans &trans &trans
+               &trans &trans &trans                                                  &trans &trans
+                       &trans &trans                                                  &trans
             >;
+            sensor-bindings = <&vol_encoder &vol_encoder>;
         };
-         layer_6 {
+
+        // ---------- L6 GAME: right half = QWERTY left half (lefty gaming).
+        // Enter via FUN(pos16) &tog GAME; exit = L49 &tog GAME ----------
+        game_layer {
+            display-name = "Game";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
+&kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &kp F5           &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5
+&kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11          &kp TAB &kp Q &kp W &kp E &kp R &kp T
+&kp F12 &kp PSCRN &trans &trans &trans &trans        &kp LCTRL &kp A &kp S &kp D &kp F &kp G
+&trans &trans &trans &trans &trans &trans           &kp LSHIFT &kp Z &kp X &kp C &kp V &kp B
+               &kp SPC &tog GAME &trans              &kp SPC &kp LCTRL
+                       &trans &trans                 &kp LSHIFT
             >;
-        };
-         layer_7 {
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
-            >;
-        };
-         layer_8 {
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
-            >;
-        };
-         layer_9 {
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans  &trans
-                                &trans  &trans    &trans
-            >;
+            sensor-bindings = <&scroll_vertical_encoder &scroll_horizontal_encoder>;
         };
     };
 };
