@@ -51,6 +51,8 @@
 &trackball_split2 { 
 	status = "disabled"; 
 };
+&right_encoder {
+    status = "okay";
 
 
 
