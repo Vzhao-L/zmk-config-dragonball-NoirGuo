@@ -7,6 +7,7 @@
 #include <dt-bindings/zmk/rgb.h>
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <behaviors/mouse_key_toggle.dtsi>
 
 
 
@@ -82,7 +83,7 @@
 &kp LEFT_SHIFT  &kp A   &kp S   &kp D         &kp F      &kp G       &kp H      &kp J      &kp K      &kp L             &kp SEMI  &kp SQT
 &kp LCTRL       &kp Z   &kp X   &kp C         &kp V      &kp B       &kp N      &kp M      &kp COMMA  &kp LEFT_BRACKET  &kp FSLH  &kp MINUS
                                 &kp LEFT_ALT  &kp SPACE  &to 1       &kp LWIN   &kp SPACE
-                                              &mkp MB1   &mkp MB2    &kp ENTER
+                                              &mktg MB1   &mkp MB2    &kp ENTER
             >;
             sensor-bindings =<&scroll_vertical_encoder &scroll_vertical_encoder>;
                 //<&scroll_vertical_encoder>,
@@ -99,7 +100,7 @@
 &kp LEFT_SHIFT  &none            &none            &none            &bt BT_NXT       &bt BT_CLR    &none      &kp LEFT  &kp DOWN    &kp RIGHT          &none    &none
 &kp LCTRL       &none            &none            &none            &none            &none         &none      &none     &kp PERIOD  &kp RIGHT_BRACKET  &none    &kp EQUAL
                                                   &kp LEFT_ALT     &kp SPACE        &to 0         &none      &none
-                                                                   &mkp MB1         &mkp MB2      &kp ENTER
+                                                                   &mktg MB1         &mkp MB2      &kp ENTER
             >;
             sensor-bindings =<&scroll_vertical_encoder &scroll_vertical_encoder>;
         };
