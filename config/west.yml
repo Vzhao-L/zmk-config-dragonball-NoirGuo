@@ -17,5 +17,8 @@ manifest:
     - name: zmk-dongle-display
       remote: englmaxi
       revision: v0.3
+    - name: zmk-behavior-mouse-key-toggle
+      remote: badjeff
+      revision: 4ad250241b1a90acfdd01d363f91e5336f9744fc
   self:
     path: config
