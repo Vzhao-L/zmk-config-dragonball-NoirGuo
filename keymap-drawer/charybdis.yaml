@@ -54,7 +54,7 @@ layers:
   - {t: '1', h: toggle}
   - LWIN
   - $$mdi:keyboard-space$$
-  - '&mkp MB1'
+  - '&mktg MB1'
   - '&mkp MB2'
   - {t: '$$mdi:keyboard-return$$', type: enter}
   '1':
@@ -111,7 +111,7 @@ layers:
   - {t: '0', h: toggle}
   - {t: '$$mdi:minus-circle-outline$$', type: none}
   - {t: '$$mdi:minus-circle-outline$$', type: none}
-  - '&mkp MB1'
+  - '&mktg MB1'
   - '&mkp MB2'
   - {t: '$$mdi:keyboard-return$$', type: enter}
   '2':
