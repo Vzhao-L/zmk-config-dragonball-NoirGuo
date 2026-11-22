@@ -71,6 +71,12 @@
                 <&macro_wait_time 30>,
                 <&rgb_ug RGB_COLOR_HSB(250,100,50)>;
         };
+
+        MBL_toggle: MBL_toggle {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &mktg MB1>;
+        };
     };
 
     keymap {
